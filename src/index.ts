@@ -1,5 +1,6 @@
 import express, { NextFunction, Request, Response } from "express";
 import winston from "winston";
+import cors from "cors";
 import expressWinston from "express-winston";
 
 import logger from "./utils/logger";
@@ -19,6 +20,8 @@ app.use(
   }),
 );
 
+app.use(cors());
+
 logger.initialise();
 
 // main API modules
@@ -31,3 +34,5 @@ app.use((err: any, req: Request, res: Response, next: NextFunction) => {
 });
 
 app.listen(port, () => winston.info(`listening on port ${port}!`));
+
+module.exports = app;

@@ -20,6 +20,7 @@ router.post(
   asyncRoute(async (req: Request, res: Response) => {
     if (!req.body.name || !req.body.callbackUrl) {
       res.status(404).end("Payload is not right need to have name and callbackUrl");
+      return;
     }
 
     try {
@@ -28,14 +29,17 @@ router.post(
         await axiosInstance.post(req.body.callbackUrl, { data });
       } catch (error) {
         res.status(404).send("Callback Url Does not Exist");
+        return;
       }
       res.send(data);
     } catch (error) {
       if (error.response.status === 404) {
         res.status(error.response.status).send(`Provider ${req.body.name} Does not exist`);
+        return;
       }
       if (error.response.status === 500) {
         res.status(error.response.status).send(`Provider Api is Failing with message ${error.response.data}`);
+        return;
       }
     }
   }),
@@ -45,7 +49,7 @@ router.post(
   "/data",
   jsonParser,
   asyncRoute(async (req: Request, res: Response) => {
-    res.send(req.body.data);
+    res.end();
   }),
 );
 
