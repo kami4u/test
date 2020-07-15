@@ -1,7 +1,15 @@
 import { Request, Response, Router } from "express";
-import axios from "axios";
+import axios, { AxiosInstance } from "axios";
 import bodyParser from "body-parser";
 import { asyncRoute } from "../utils/async";
+
+const axiosInstance: AxiosInstance = axios.create();
+axiosInstance.interceptors.request.use((config) => {
+  if (config.timeout === 0) {
+    config.timeout = 5 * 1000;
+  }
+  return config;
+});
 
 const router = Router();
 const jsonParser = bodyParser.json();
@@ -15,15 +23,20 @@ router.post(
     }
 
     try {
-      const { data } = await axios.get(`http://127.0.0.1:3000/providers/${req.body.name}`);
+      const { data } = await axiosInstance.get(`http://127.0.0.1:3000/providers/${req.body.name}`);
       try {
-        await axios.post(req.body.callbackUrl, { data });
+        await axiosInstance.post(req.body.callbackUrl, { data });
       } catch (error) {
-        res.status(500).send("Callback Url Does not Exist");
+        res.status(404).send("Callback Url Does not Exist");
       }
       res.send(data);
     } catch (error) {
-      res.status(500).send("Providers API is Failing");
+      if (error.response.status === 404) {
+        res.status(error.response.status).send(`Provider ${req.body.name} Does not exist`);
+      }
+      if (error.response.status === 500) {
+        res.status(error.response.status).send(`Provider Api is Failing with message ${error.response.data}`);
+      }
     }
   }),
 );
