@@ -11,16 +11,19 @@ router.post(
   jsonParser,
   asyncRoute(async (req: Request, res: Response) => {
     if (!req.body.name || !req.body.callbackUrl) {
-      throw new Error("Parameters Required(name, callbackUrl)");
+      res.status(404).end("Payload is not right need to have name and callbackUrl");
     }
 
     try {
       const { data } = await axios.get(`http://127.0.0.1:3000/providers/${req.body.name}`);
-      await axios.post(req.body.callbackUrl, { data });
+      try {
+        await axios.post(req.body.callbackUrl, { data });
+      } catch (error) {
+        res.status(500).send("Callback Url Does not Exist");
+      }
       res.send(data);
     } catch (error) {
-      console.log(error.response.status);
-      throw new Error(error);
+      res.status(500).send("Providers API is Failing");
     }
   }),
 );
