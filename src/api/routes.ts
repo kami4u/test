@@ -33,6 +33,7 @@ router.post(
       }
       res.send(data);
     } catch (error) {
+      if (error.code === "ECONNREFUSED") res.status(500).send("Provider server is not responding");
       if (error.response.status === 404) {
         res.status(error.response.status).send(`Provider ${req.body.name} Does not exist`);
         return;
