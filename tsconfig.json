@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "outDir": "./dist/",
+    "noImplicitAny": true,
+    "module": "commonjs",
+    "target": "es6",
+    "allowJs": true,
+    // Import non-ES modules as default imports.
+    "esModuleInterop": true,
+    "moduleResolution": "node",
+    "typeRoots": ["./src/@types"],
+    "sourceMap": true
+  },
+  "exclude": ["dist", "**/*.spec.ts", "**/*.test.ts"]
+}
