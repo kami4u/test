@@ -1,4 +1,4 @@
-import app from "./index";
+import app from "./app";
 import supertest from "supertest";
 import axios from "axios";
 import MockAdapter from "axios-mock-adapter";
