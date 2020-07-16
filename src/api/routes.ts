@@ -11,7 +11,7 @@ router.post(
   jsonParser,
   asyncRoute(async (req: Request, res: Response) => {
     const result = {
-      data: [] as any,
+      providers: [] as any,
       errors: [] as any,
     };
 
@@ -29,13 +29,13 @@ router.post(
     for (const ele of name) {
       try {
         const response = await axios.get(`http://127.0.0.1:3000/providers/${ele}`);
-        result.data.push({ name: ele, data: response.data });
+        result.providers.push({ name: ele, data: response.data });
       } catch (error) {
         // Catch it if the server is not responding
         if (error.code === "ECONNREFUSED") {
           result.errors.push({
             name: ele,
-            statusCode: res.status(500),
+            statusCode: 500,
             message: "Provider server is not responding",
           });
         } else if (error.response.status === 404) {
