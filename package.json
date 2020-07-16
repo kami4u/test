@@ -23,6 +23,7 @@
     "@types/jest": "^26.0.4",
     "@types/supertest": "^2.0.10",
     "@types/winston": "^2.4.4",
+    "axios-mock-adapter": "^1.18.1",
     "eslint": "^7.4.0",
     "express-winston": "^4.0.3",
     "jest": "^26.1.0",

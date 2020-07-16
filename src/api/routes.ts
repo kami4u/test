@@ -10,7 +10,7 @@ router.post(
   "/webhook",
   jsonParser,
   asyncRoute(async (req: Request, res: Response) => {
-    let result = [];
+    const result = [];
 
     if (!req.body.name || !req.body.callbackUrl) {
       res.status(404).end("Payload is not right need to have name and callbackUrl");

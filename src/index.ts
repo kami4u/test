@@ -35,4 +35,4 @@ app.use((err: any, req: Request, res: Response, next: NextFunction) => {
 
 app.listen(port, () => winston.info(`listening on port ${port}!`));
 
-module.exports = app;
+export default app;

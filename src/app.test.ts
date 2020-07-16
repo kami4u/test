@@ -1,86 +1,52 @@
-const app = require("./index");
-const supertest = require("supertest");
+import app from "./index";
+import supertest from "supertest";
+import axios from "axios";
+import MockAdapter from "axios-mock-adapter";
+import { gas, internal } from "./mockData/response";
+
 const request = supertest(app);
+const mock = new MockAdapter(axios);
 
 describe("Provider", () => {
-  it("Should give status 404 and error without body params", async () => {
+  it("Should give status 404 and error 'Payload is not right need to have name and callbackUrl'", async () => {
     const res = await request.post("/api/webhook");
     expect(res.status).toBe(404);
     expect(res.text).toBe("Payload is not right need to have name and callbackUrl");
   });
 
-  it("Should give status 500 or 404 and error with wrong name", async () => {
-    const res = await request.post("/api/webhook").send({ name: "asd", callbackUrl: "http://localhost:3100/api/data" });
-    if (res.status === 500) {
-      expect(res.text).toBe("Provider Api is Failing with message #fail");
-    } else {
-      expect(res.status).toBe(404);
-      expect(res.text).toBe("Provider asd Does not exist");
-    }
-  });
-
-  it("Should give status 200 or 500 with the data", async () => {
-    const response = [
-      {
-        name: "gas",
-        data: [
-          {
-            billedOn: "2020-04-07T15:03:14.257Z",
-            amount: 22.27,
-          },
-          {
-            billedOn: "2020-05-07T15:03:14.257Z",
-            amount: 30,
-          },
-        ],
-      },
-    ];
+  it("Should give status 500 and error 'Provider Api is Failing with message #fail'", async () => {
+    mock.onGet("http://127.0.0.1:3000/providers/gas").reply(500, "#fail");
     const res = await request.post("/api/webhook").send({ name: "gas", callbackUrl: "http://localhost:3100/api/data" });
-    if (res.status === 500) {
-      expect(res.text).toBe("Provider Api is Failing with message #fail");
-    } else {
-      expect(res.status).toBe(200);
-      expect(res.body).toEqual(response);
-    }
+    expect(res.status).toBe(500);
+    expect(res.text).toBe("Provider Api is Failing with message #fail");
   });
 
-  it("Should give status 200 or 500 with the data", async () => {
-    const response = [
-      {
-        name: "gas",
-        data: [
-          {
-            billedOn: "2020-04-07T15:03:14.257Z",
-            amount: 22.27,
-          },
-          {
-            billedOn: "2020-05-07T15:03:14.257Z",
-            amount: 30,
-          },
-        ],
-      },
-      {
-        name: "internet",
-        data: [
-          {
-            billedOn: "2020-02-07T15:03:14.257Z",
-            amount: 15.12,
-          },
-          {
-            billedOn: "2020-03-07T15:03:14.257Z",
-            amount: 15.12,
-          },
-        ],
-      },
-    ];
+  it("Should give status 404 and error 'Provider asd Does not exist'", async () => {
+    mock.onGet("http://127.0.0.1:3000/providers/asd").reply(404, "#fail");
+    const res = await request.post("/api/webhook").send({ name: "asd", callbackUrl: "http://localhost:3100/api/data" });
+    expect(res.status).toBe(404);
+    expect(res.text).toBe("Provider asd Does not exist");
+  });
+
+  it("Should give status 200 with the data", async () => {
+    mock.onGet("http://127.0.0.1:3000/providers/gas").reply(200, gas);
+    mock.onPost("http://localhost:3100/api/data").reply(200);
+    const res = await request.post("/api/webhook").send({ name: "gas", callbackUrl: "http://localhost:3100/api/data" });
+
+    expect(res.status).toBe(200);
+    expect(res.body[0].name).toEqual("gas");
+  });
+
+  it("Should give status 200 with the data containing all providers", async () => {
+    mock.onGet("http://127.0.0.1:3000/providers/gas").reply(200, gas);
+    mock.onGet("http://127.0.0.1:3000/providers/internal").reply(200, internal);
+    mock.onPost("http://localhost:3100/api/data").reply(200);
     const res = await request
       .post("/api/webhook")
       .send({ name: ["gas", "internal"], callbackUrl: "http://localhost:3100/api/data" });
-    if (res.status === 500) {
-      expect(res.text).toBe("Provider Api is Failing with message #fail");
-    } else {
-      expect(res.status).toBe(200);
-      expect(res.body).toEqual(response);
-    }
+
+    expect(res.status).toBe(200);
+    expect(res.body[0].name).toEqual("gas");
+    expect(res.body[1].name).toEqual("internal");
   });
 });
