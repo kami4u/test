@@ -1,6 +1,6 @@
 {
   "name": "test",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -16,5 +16,41 @@
   },
   "devDependencies": {
     "standard-version": "^9.3.1"
+  },
+  "standard-version": {
+    "types": [
+      {
+        "type": "feat",
+        "section": "Features"
+      },
+      {
+        "type": "fix",
+        "section": "Bug Fixes"
+      },
+      {
+        "type": "chore",
+        "hidden": false
+      },
+      {
+        "type": "docs",
+        "hidden": false
+      },
+      {
+        "type": "style",
+        "hidden": false
+      },
+      {
+        "type": "refactor",
+        "hidden": false
+      },
+      {
+        "type": "perf",
+        "hidden": false
+      },
+      {
+        "type": "test",
+        "hidden": false
+      }
+    ]
   }
 }
