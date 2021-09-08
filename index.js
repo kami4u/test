@@ -19,7 +19,7 @@ app.use(async (ctx, next) => {
   await next();
   const ms = Date.now() - start;
   ctx.set('X-Response-Time', `${ms}ms`);
-  ctx.storeId = ctx.header.locale === 'en-GB' ? 1 : 2;
+  ctx.storeId = ctx.header.locale === 'en-GB' ? 1 : 3;
   console.log('first');
 });
 
