@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.1.0](https://github.com/kami4u/test/compare/v1.0.7...v1.1.0) (2021-09-08)
+
+
+### Features
+
+* back ([c7a4904](https://github.com/kami4u/test/commit/c7a4904dbb977f731486df881bdc9e8822a5b572))
+* prevent the application from crashing ([3497e98](https://github.com/kami4u/test/commit/3497e98d5b855284604357c83f380c03059d6ea3))
+
 ### [1.0.7](https://github.com/kami4u/test/compare/v1.0.6...v1.0.7) (2021-09-08)
 
 
